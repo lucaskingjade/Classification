@@ -76,9 +76,9 @@ class RNN_Classifier(BaseEstimator):
         self.test_Y2 = dataset_obj.test_Y2
         self.test_Y3 = dataset_obj.test_Y3
         #convert Y1 to categorical vector
-        self.train_Y1 = to_categorical(self.train_Y1, num_classes=8)
-        self.valid_Y1 = to_categorical(self.valid_Y1, num_classes=8)
-        self.test_Y1 = to_categorical(self.test_Y1, num_classes=8)
+        self.train_Y1 = to_categorical(self.train_Y1,8)
+        self.valid_Y1 = to_categorical(self.valid_Y1,8)
+        self.test_Y1 = to_categorical(self.test_Y1, 8)
 
         #remove {"Simple Walk","Panic Fear"} pairs from training set
         if self.remove_pairs == True:
