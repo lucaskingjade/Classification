@@ -75,10 +75,10 @@ class RNN_Classifier(BaseEstimator):
         self.test_Y1 = dataset_obj.test_Y1
         self.test_Y2 = dataset_obj.test_Y2
         self.test_Y3 = dataset_obj.test_Y3
-        #convert Y1 to categorical vector
-        self.train_Y1 = to_categorical(self.train_Y1,8)
-        self.valid_Y1 = to_categorical(self.valid_Y1,8)
-        self.test_Y1 = to_categorical(self.test_Y1, 8)
+        # #convert Y1 to categorical vector
+        # self.train_Y1 = to_categorical(self.train_Y1,8)
+        # self.valid_Y1 = to_categorical(self.valid_Y1,8)
+        # self.test_Y1 = to_categorical(self.test_Y1, 8)
 
         #remove {"Simple Walk","Panic Fear"} pairs from training set
         if self.remove_pairs == True:
@@ -114,6 +114,7 @@ class RNN_Classifier(BaseEstimator):
         new_X = []
         new_Y1 = []
         new_Y2 = []
+
         for activity,emotion in zip(activities,emotions):
             #get label from name
             act_label= get_label_by_name(activity,whichlabel=1)
@@ -136,6 +137,8 @@ class RNN_Classifier(BaseEstimator):
         missing_X = np.asarray(missing_X)
         missing_Y1 = np.asarray(missing_Y1)
         missing_Y2 = np.asarray(missing_Y2)
+        new_Y1 = to_categorical(new_Y1,8)
+        missing_Y1 = to_categorical(missing_Y1,8)
         return new_X,new_Y1,new_Y2,missing_X,missing_Y1,missing_Y2
 
     def rnn(self):
