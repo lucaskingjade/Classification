@@ -79,8 +79,8 @@ class RNN_Classifier(BaseEstimator):
             # self.activities = ["Simple Walk"]
             # emotions = ["Panic Fear"]
 
-            activities = self.activities
-            emotions = self.emotions
+            activities = self.rm_activities
+            emotions = self.rm_emotions
             print "remove paris:{0},{1}".format(activities,emotions)
             self.train_X, self.train_Y1,self.train_Y2,\
             self.train_missing_X,self.train_missing_Y1,self.train_missing_Y2\
