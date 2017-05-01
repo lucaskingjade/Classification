@@ -184,6 +184,7 @@ class RNN_Classifier(BaseEstimator):
             print('Epoch seen: {}'.format(epoch))
 
             #self.train_Y2= self.train_Y2.reshape(self.train_Y2.shape[0],1,1)
+            print "shape of train_Y1 is {}".format(self.train_Y1.shape)
             self.training_loop(self.train_X,self.train_Y1,self.train_Y2,batch_size=self.batch_size)
 
     def training_loop(self, X,Y,additional_labels, batch_size):
@@ -191,6 +192,7 @@ class RNN_Classifier(BaseEstimator):
         self.data_generator = self.batch_generator(X, Y, additional_labels, batch_size=batch_size)
 
         for X_batch,Y_batch, add_label in self.data_generator:
+            print "shape of Y_batch is {}".format(Y_batch.shape)
             self.rnn.train_on_batch(x=[X_batch,add_label],y=Y_batch)
 
 
