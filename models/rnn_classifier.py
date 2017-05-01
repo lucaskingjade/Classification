@@ -2,15 +2,17 @@ from keras.models import Model
 from keras.layers import LSTM,Dense,merge,Input,Embedding,RepeatVector,Reshape
 import numpy as np
 from keras.optimizers import SGD,RMSprop
-class RNN_Classifier():
+from sklearn.base import BaseEstimator
 
-    def __init__(self,hidden_dim_list=[100,100],
+class RNN_Classifier(BaseEstimator):
+
+    def __init__(self,embd_dim=2,
+                 hidden_dim_list=[100,100],
                  activation_list=['tanh','tanh'],
-                 dropout_dis_list=[0.0,0.0],
                  batch_size=300,max_epoch=200,
                  optimiser='rmsprop',
                  lr=0.001,decay=0.0,
-                 momentum=0.0):
+                 momentum=0.0,data_obj=None):
 
         args = locals().copy()
         del args['self']
@@ -72,16 +74,17 @@ class RNN_Classifier():
 
     def rnn(self):
         input = Input(shape = (self.max_len,self.dof),name='input')
-        label_input  =Input(shape=(1,),name='label_input')
-        embd_label = Embedding(input_dim=8,output_dim=2)(label_input)
-        embd_label = Reshape(target_shape=(2,))(embd_label)
+        label_input = Input(shape=(1,), name='label_input')
+        embd_label = Embedding(input_dim=8, output_dim=self.embd_dim)(label_input)
+        embd_label = Reshape(target_shape=(self.embd_dim,))(embd_label)
         embd_label = RepeatVector(self.max_len)(embd_label)
-        encoded = merge([input, embd_label], mode='concat',concat_axis=2)
+        encoded = merge([input, embd_label], mode='concat', concat_axis=2)
         for i, (dim, activation) in enumerate(zip(self.hidden_dim_list, self.activation_list)):
-                encoded = LSTM(output_dim=dim, activation=activation, return_sequences=True)(encoded)
-        encoded = LSTM(output_dim=10, activation='tanh',return_sequences=False)(encoded)
+            encoded = LSTM(output_dim=dim, activation=activation, return_sequences=True)(encoded)
+            if i == len(self.hidden_dim_list) - 1:
+                encoded = LSTM(output_dim=dim, activation=activation, return_sequences=False)(encoded)
         encoded = Dense(output_dim=1, activation='sigmoid')(encoded)
-        return Model(input=[input, label_input], output = encoded, name='Encoder')
+        return Model(input=[input, label_input], output=encoded, name='RNN')
 
     def batch_generator(self,iterable1,iterable2,iterable3,batch_size=1,shuffle=False):
         l = len(iterable1)
@@ -102,8 +105,9 @@ class RNN_Classifier():
                              }
 
 
-    def training(self,data_obj):
-        self.set_up_dataset(data_obj)
+    def training(self,data_obj=None):
+        if data_obj!=None:
+            self.set_up_dataset(data_obj)
         self.set_up_model()
         self.init_loss_history_list()
         print "training set size: %d" % len(self.train_X)
@@ -119,6 +123,16 @@ class RNN_Classifier():
         for X_batch,Y_batch, add_label in self.data_generator:
             self.rnn.train_on_batch(x=[X_batch,add_label],y=Y_batch)
 
+    def fit(self,X,y=None):
+        # if self.data_obj !=None:
+        #     print "Set up data_obj in __init__ function"
+        #     self.set_up_dataset(self.data_obj)
+        self.training(self.data_obj)
+
+    def score(self,X,y=None):
+        loss,accuracy = self.rnn.evaluate([self.valid_X,self.valid_Y2],y=self.valid_Y1,batch_size=1000)
+        print 'accuracy is {}%'.format(accuracy*100.)
+        return accuracy
 
 if __name__=='__main__':
     rnn = RNN_Classifier(hidden_dim_list=[100,100],activation_list=['tanh','tanh'],
