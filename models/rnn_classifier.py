@@ -139,6 +139,8 @@ class RNN_Classifier(BaseEstimator):
         missing_Y2 = np.asarray(missing_Y2)
         new_Y1 = to_categorical(new_Y1,8)
         missing_Y1 = to_categorical(missing_Y1,8)
+        print "shape of new_Y1 is {}".format(new_Y1.shape)
+        print "shape of missing_Y1 is {}".format(missing_Y1.shape)
         return new_X,new_Y1,new_Y2,missing_X,missing_Y1,missing_Y2
 
     def rnn(self):
