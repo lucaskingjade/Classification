@@ -27,8 +27,13 @@ hidden_dim_list=[[100,20]]
 activation_list=[['tanh','tanh']]
 batch_size=[300]
 max_epoch=[20]
+remove_pairs=True
+rm_activities = [["Simple Walk"]]
+rm_emotions = [["Panic Fear"]]
 params = dict(embd_dim=embd_dim,batch_size=batch_size,max_epoch=max_epoch,
-            hidden_dim_list=hidden_dim_list,activation_list=activation_list)
+            hidden_dim_list=hidden_dim_list,activation_list=activation_list,
+            remove_pairs=remove_pairs,rm_activities=rm_activities,rm_emotions=rm_emotions)
+
 params.update(data_obj=[data_obj])
 X = np.concatenate((data_obj.train_X,data_obj.valid_X),axis=0)
 data_indices = data_generator(data_obj.train_X,data_obj.valid_X)

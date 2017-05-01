@@ -3,6 +3,7 @@ from keras.layers import LSTM,Dense,merge,Input,Embedding,RepeatVector,Reshape
 import numpy as np
 from keras.optimizers import SGD,RMSprop
 from sklearn.base import BaseEstimator
+from Classification.data.Emilya_Dataset.EmilyData_utils import get_label_by_name
 
 class RNN_Classifier(BaseEstimator):
 
@@ -12,7 +13,9 @@ class RNN_Classifier(BaseEstimator):
                  batch_size=300,max_epoch=200,
                  optimiser='rmsprop',
                  lr=0.001,decay=0.0,
-                 momentum=0.0,data_obj=None):
+                 momentum=0.0,data_obj=None,remove_pairs=False,
+                 rm_activities = ["Simple Walk"],
+                rm_emotions = ["Panic Fear"]):
 
         args = locals().copy()
         del args['self']
@@ -71,6 +74,64 @@ class RNN_Classifier(BaseEstimator):
         self.test_Y1 = dataset_obj.test_Y1
         self.test_Y2 = dataset_obj.test_Y2
         self.test_Y3 = dataset_obj.test_Y3
+        #remove {"Simple Walk","Panic Fear"} pairs from training set
+        if self.remove_pairs == True:
+            # self.activities = ["Simple Walk"]
+            # emotions = ["Panic Fear"]
+
+            activities = self.activities
+            emotions = self.emotions
+            print "remove paris:{0},{1}".format(activities,emotions)
+            self.train_X, self.train_Y1,self.train_Y2,\
+            self.train_missing_X,self.train_missing_Y1,self.train_missing_Y2\
+                = self.remove_pairs(self.train_X,self.train_Y1,self.train_Y2,activities,emotions)
+            self.valid_X, self.valid_Y1,self.valid_Y2,\
+            self.valid_missing_X,self.valid_missing_Y1,self.valid_missing_Y2\
+                = self.remove_pairs(self.valid_X, self.valid_Y1, self.valid_Y2, activities,
+                                                                     emotions)
+            self.test_X, self.test_Y1,self.test_Y2,\
+            self.test_missing_X,self.test_missing_Y1,self.test_missing_Y2\
+                = self.remove_pairs(self.test_X, self.test_Y1, self.test_Y2, activities,
+                                                                     emotions)
+            #concate valid data
+            self.valid_X = np.concatenate((self.valid_X,self.valid_missing_X),axis=0)
+            self.valid_Y1 = np.concatenate((self.valid_Y1,self.valid_missing_Y1),axis=0)
+            self.valid_Y2 = np.concatenate((self.valid_Y2, self.valid_missing_Y2), axis=0)
+            del self.valid_missing_X, self.valid_missing_Y1,self.valid_missing_Y2
+
+
+    def remove_pairs(self,X,Y1,Y2,activities,emotions):
+        missing_X = []
+        missing_Y1 = []
+        missing_Y2 = []
+        new_X = []
+        new_Y1 = []
+        new_Y2 = []
+        for activity,emotion in zip(activities,emotions):
+            #get label from name
+            act_label= get_label_by_name(activity,whichlabel=1)
+            em_label = get_label_by_name(emotion,whichlabel=2)
+            index1 = np.where(Y1==act_label)[0]
+            index2 = np.where(Y2 == em_label)[0]
+            index = set(index1).intersection(index2)[0]
+            missing_X.extend(X[index])
+            missing_Y1.extend(Y1[index])
+            missing_Y2.extend(Y2[index])
+            mask = np.ones(len(X), np.bool)
+            mask[index] = 0
+            new_X.extend(X[mask])
+            new_Y1.extend(Y1[mask])
+            new_Y2.extend(Y2[mask])
+        new_X = np.asarray(new_X)
+        new_Y1 = np.asarray(new_Y1)
+        new_Y2 = np.asarray(new_Y2)
+        missing_X = np.asarray(missing_X)
+        missing_Y1 = np.asarray(missing_Y1)
+        missing_Y2 = np.asarray(missing_Y2)
+        return new_X,new_Y1,new_Y2,missing_X,missing_Y1,missing_Y2
+
+
+
 
     def rnn(self):
         input = Input(shape = (self.max_len,self.dof),name='input')
@@ -148,7 +209,7 @@ class RNN_Classifier(BaseEstimator):
 
 if __name__=='__main__':
     rnn = RNN_Classifier(hidden_dim_list=[100,100],activation_list=['tanh','tanh'],
-                   dropout_dis_list=[0.0,0.0],batch_size=300,
+                   batch_size=300,
                    max_epoch=200,optimiser='rmsprop',lr=0.001,decay=0.0,
                    momentum=0.0)
     from Classification.data.dataset import Emilya_Dataset
