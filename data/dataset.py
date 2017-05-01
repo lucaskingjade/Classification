@@ -29,7 +29,7 @@ class Emilya_Dataset(Basic_Dataset):
 
 
     def extract_data(self):
-        n = 900
+        n = None
         self.train_X = self.hdf_handle['training_set']['X'][:n]
         self.train_Y1 = self.hdf_handle['training_set']['Y1'][:n]
         self.train_Y2 = self.hdf_handle['training_set']['Y2'][:n]
