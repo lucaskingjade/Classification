@@ -141,8 +141,9 @@ class RNN_Classifier(BaseEstimator):
         self.training(self.data_obj)
 
     def score(self,X,y=None):
-        loss,accuracy = self.rnn.evaluate([self.valid_X,self.valid_Y2],y=self.valid_Y1,batch_size=1000)
+        loss,accuracy = self.rnn.evaluate([self.valid_X,self.valid_Y2],y=self.valid_Y1,batch_size=1000,verbose=0)
         print 'accuracy is {}%'.format(accuracy*100.)
+        print "loss is {}".format(loss)
         return accuracy
 
 if __name__=='__main__':
