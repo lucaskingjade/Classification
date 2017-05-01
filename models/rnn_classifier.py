@@ -100,6 +100,7 @@ class RNN_Classifier(BaseEstimator):
                 = self.remove_pairs_fn(self.test_X, self.test_Y1, self.test_Y2, activities,
                                                                      emotions)
             #concate valid data
+            print "shape of valid_x and valid_missing_X is {0},{1}".format(self.valid_X.shape,self.valid_missing_X.shape)
             self.valid_X = np.concatenate((self.valid_X,self.valid_missing_X),axis=0)
             self.valid_Y1 = np.concatenate((self.valid_Y1,self.valid_missing_Y1),axis=0)
             self.valid_Y2 = np.concatenate((self.valid_Y2, self.valid_missing_Y2), axis=0)
