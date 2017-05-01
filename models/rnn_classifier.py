@@ -130,9 +130,6 @@ class RNN_Classifier(BaseEstimator):
         missing_Y2 = np.asarray(missing_Y2)
         return new_X,new_Y1,new_Y2,missing_X,missing_Y1,missing_Y2
 
-
-
-
     def rnn(self):
         input = Input(shape = (self.max_len,self.dof),name='input')
         label_input = Input(shape=(1,), name='label_input')
