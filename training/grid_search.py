@@ -32,7 +32,7 @@ params = dict(embd_dim=embd_dim,batch_size=batch_size,max_epoch=max_epoch,
 params.update(data_obj=[data_obj])
 X = np.concatenate((data_obj.train_X,data_obj.valid_X),axis=0)
 data_indices = data_generator(data_obj.train_X,data_obj.valid_X)
-grid_search = GridSearchCV(RNN_Classifier(),param_grid=params,cv=5)
+grid_search = GridSearchCV(RNN_Classifier(),param_grid=params,cv=data_indices)
 print "data_obj: train_X:{0}, train_Y2:{1},train_Y1:{2}".format(data_obj.train_X.shape,data_obj.train_Y2.shape,data_obj.train_Y1.shape)
 grid_search.fit(X=X)
 
