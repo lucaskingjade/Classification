@@ -127,6 +127,17 @@ class RNN_Classifier(BaseEstimator):
         # if self.data_obj !=None:
         #     print "Set up data_obj in __init__ function"
         #     self.set_up_dataset(self.data_obj)
+        print "============Parameters==========="
+        print "embd_dim={}".format(self.embd_dim)
+        print "hidden_dim_list={}".format(self.hidden_dim_list)
+        print "activation_list={}".format(self.activation_list)
+        print "batch_size={}".format(self.batch_size)
+        print "max_epoch={}".format(self.max_epoch)
+        print "optimiser={}".format(self.optimiser)
+        print "lr={}".format(self.lr)
+        print "decay={}".format(self.decay)
+        print "momentum={}".format(self.momentum)
+        print "================================="
         self.training(self.data_obj)
 
     def score(self,X,y=None):
