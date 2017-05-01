@@ -75,10 +75,6 @@ class RNN_Classifier(BaseEstimator):
         self.test_Y1 = dataset_obj.test_Y1
         self.test_Y2 = dataset_obj.test_Y2
         self.test_Y3 = dataset_obj.test_Y3
-        # #convert Y1 to categorical vector
-        # self.train_Y1 = to_categorical(self.train_Y1,8)
-        # self.valid_Y1 = to_categorical(self.valid_Y1,8)
-        # self.test_Y1 = to_categorical(self.test_Y1, 8)
 
         #remove {"Simple Walk","Panic Fear"} pairs from training set
         if self.remove_pairs == True:
@@ -105,6 +101,12 @@ class RNN_Classifier(BaseEstimator):
             self.valid_Y1 = np.concatenate((self.valid_Y1,self.valid_missing_Y1),axis=0)
             self.valid_Y2 = np.concatenate((self.valid_Y2, self.valid_missing_Y2), axis=0)
             del self.valid_missing_X, self.valid_missing_Y1,self.valid_missing_Y2
+        else:
+
+            #convert Y1 to categorical vector
+            self.train_Y1 = to_categorical(self.train_Y1,8)
+            self.valid_Y1 = to_categorical(self.valid_Y1,8)
+            self.test_Y1 = to_categorical(self.test_Y1, 8)
 
 
     def remove_pairs_fn(self,X,Y1,Y2,activities,emotions):
