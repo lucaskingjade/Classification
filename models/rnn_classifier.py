@@ -84,14 +84,14 @@ class RNN_Classifier(BaseEstimator):
             print "remove paris:{0},{1}".format(activities,emotions)
             self.train_X, self.train_Y1,self.train_Y2,\
             self.train_missing_X,self.train_missing_Y1,self.train_missing_Y2\
-                = self.remove_pairs(self.train_X,self.train_Y1,self.train_Y2,activities,emotions)
+                = self.remove_pairs_fn(self.train_X,self.train_Y1,self.train_Y2,activities,emotions)
             self.valid_X, self.valid_Y1,self.valid_Y2,\
             self.valid_missing_X,self.valid_missing_Y1,self.valid_missing_Y2\
-                = self.remove_pairs(self.valid_X, self.valid_Y1, self.valid_Y2, activities,
+                = self.remove_pairs_fn(self.valid_X, self.valid_Y1, self.valid_Y2, activities,
                                                                      emotions)
             self.test_X, self.test_Y1,self.test_Y2,\
             self.test_missing_X,self.test_missing_Y1,self.test_missing_Y2\
-                = self.remove_pairs(self.test_X, self.test_Y1, self.test_Y2, activities,
+                = self.remove_pairs_fn(self.test_X, self.test_Y1, self.test_Y2, activities,
                                                                      emotions)
             #concate valid data
             self.valid_X = np.concatenate((self.valid_X,self.valid_missing_X),axis=0)
@@ -100,7 +100,7 @@ class RNN_Classifier(BaseEstimator):
             del self.valid_missing_X, self.valid_missing_Y1,self.valid_missing_Y2
 
 
-    def remove_pairs(self,X,Y1,Y2,activities,emotions):
+    def remove_pairs_fn(self,X,Y1,Y2,activities,emotions):
         missing_X = []
         missing_Y1 = []
         missing_Y2 = []
