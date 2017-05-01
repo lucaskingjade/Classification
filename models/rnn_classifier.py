@@ -4,6 +4,7 @@ import numpy as np
 from keras.optimizers import SGD,RMSprop
 from sklearn.base import BaseEstimator
 from Classification.data.Emilya_Dataset.EmilyData_utils import get_label_by_name
+from keras.utils.np_utils import to_categorical
 
 class RNN_Classifier(BaseEstimator):
 
@@ -36,7 +37,7 @@ class RNN_Classifier(BaseEstimator):
             optimizer = RMSprop(lr=self.lr)
         else:
             pass
-        self.rnn.compile(optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+        self.rnn.compile(optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
     def save_configuration(self,arguments):
         with open('meta_data.txt','w') as file:
             file.writelines("========Meta Data========\r\n")
@@ -74,6 +75,11 @@ class RNN_Classifier(BaseEstimator):
         self.test_Y1 = dataset_obj.test_Y1
         self.test_Y2 = dataset_obj.test_Y2
         self.test_Y3 = dataset_obj.test_Y3
+        #convert Y1 to categorical vector
+        self.train_Y1 = to_categorical(self.train_Y1, num_classes=8)
+        self.valid_Y1 = to_categorical(self.valid_Y1, num_classes=8)
+        self.test_Y1 = to_categorical(self.test_Y1, num_classes=8)
+
         #remove {"Simple Walk","Panic Fear"} pairs from training set
         if self.remove_pairs == True:
             # self.activities = ["Simple Walk"]
@@ -141,7 +147,7 @@ class RNN_Classifier(BaseEstimator):
             encoded = LSTM(output_dim=dim, activation=activation, return_sequences=True)(encoded)
             if i == len(self.hidden_dim_list) - 1:
                 encoded = LSTM(output_dim=dim, activation=activation, return_sequences=False)(encoded)
-        encoded = Dense(output_dim=1, activation='sigmoid')(encoded)
+        encoded = Dense(output_dim=8, activation='softmax')(encoded)
         return Model(input=[input, label_input], output=encoded, name='RNN')
 
     def batch_generator(self,iterable1,iterable2,iterable3,batch_size=1,shuffle=False):
@@ -178,8 +184,10 @@ class RNN_Classifier(BaseEstimator):
     def training_loop(self, X,Y,additional_labels, batch_size):
         # batch generator
         self.data_generator = self.batch_generator(X, Y, additional_labels, batch_size=batch_size)
+
         for X_batch,Y_batch, add_label in self.data_generator:
             self.rnn.train_on_batch(x=[X_batch,add_label],y=Y_batch)
+
 
     def fit(self,X,y=None):
         # if self.data_obj !=None:
