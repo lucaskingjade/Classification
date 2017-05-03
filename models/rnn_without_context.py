@@ -1,3 +1,6 @@
+#This is a classifier model without any context information
+
+
 from keras.models import Model
 from keras.layers import LSTM,Dense,merge,Input,Embedding,RepeatVector,Reshape
 import numpy as np
@@ -6,9 +9,9 @@ from sklearn.base import BaseEstimator
 from Classification.data.Emilya_Dataset.EmilyData_utils import get_label_by_name
 from keras.utils.np_utils import to_categorical
 
-class RNN_Classifier(BaseEstimator):
+class RNN_without_Context(BaseEstimator):
 
-    def __init__(self,embd_dim=2,
+    def __init__(self,
                  hidden_dim_list=[100,100],
                  activation_list=['tanh','tanh'],
                  batch_size=300,max_epoch=200,
@@ -147,11 +150,7 @@ class RNN_Classifier(BaseEstimator):
 
     def rnn(self):
         input = Input(shape = (self.max_len,self.dof),name='input')
-        label_input = Input(shape=(1,), name='label_input')
-        embd_label = Embedding(input_dim=8, output_dim=self.embd_dim)(label_input)
-        embd_label = Reshape(target_shape=(self.embd_dim,))(embd_label)
-        embd_label = RepeatVector(self.max_len)(embd_label)
-        encoded = merge([input, embd_label], mode='concat', concat_axis=2)
+        encoded = input
         for i, (dim, activation) in enumerate(zip(self.hidden_dim_list, self.activation_list)):
             if i == len(self.hidden_dim_list) - 1:
                 encoded = LSTM(output_dim=dim, activation=activation, return_sequences=False)(encoded)
@@ -159,9 +158,9 @@ class RNN_Classifier(BaseEstimator):
                 encoded = LSTM(output_dim=dim, activation=activation, return_sequences=True)(encoded)
 
         encoded = Dense(output_dim=8, activation='softmax')(encoded)
-        return Model(input=[input, label_input], output=encoded, name='RNN')
+        return Model(input=input, output=encoded, name='RNN')
 
-    def batch_generator(self,iterable1,iterable2,iterable3,batch_size=1,shuffle=False):
+    def batch_generator(self,iterable1,iterable2,batch_size=1,shuffle=False):
         l = len(iterable1)
         if shuffle ==True:
             indices = np.random.permutation(len(iterable1))
@@ -169,7 +168,7 @@ class RNN_Classifier(BaseEstimator):
             indices = np.arange(0,stop=len(iterable1))
         for ndx in range(0,l,batch_size):
             cur_indices = indices[ndx:min(ndx+batch_size,l)]
-            yield  iterable1[cur_indices],iterable2[cur_indices],iterable3[cur_indices]
+            yield  iterable1[cur_indices],iterable2[cur_indices]
 
     def init_loss_history_list(self):
 
@@ -191,15 +190,15 @@ class RNN_Classifier(BaseEstimator):
 
             #self.train_Y2= self.train_Y2.reshape(self.train_Y2.shape[0],1,1)
             print "shape of train_Y1 is {}".format(self.train_Y1.shape)
-            self.training_loop(self.train_X,self.train_Y1,self.train_Y2,batch_size=self.batch_size)
+            self.training_loop(self.train_X,self.train_Y1,batch_size=self.batch_size)
 
-    def training_loop(self, X,Y,additional_labels, batch_size):
+    def training_loop(self, X,Y, batch_size):
         # batch generator
-        self.data_generator = self.batch_generator(X, Y, additional_labels, batch_size=batch_size)
+        self.data_generator = self.batch_generator(X, Y,batch_size=batch_size,shuffle=True)
 
-        for X_batch,Y_batch, add_label in self.data_generator:
+        for X_batch,Y_batch in self.data_generator:
             print "shape of Y_batch is {}".format(Y_batch.shape)
-            self.rnn.train_on_batch(x=[X_batch,add_label],y=Y_batch)
+            self.rnn.train_on_batch(x=X_batch,y=Y_batch)
 
 
     def fit(self,X,y=None):
@@ -207,7 +206,6 @@ class RNN_Classifier(BaseEstimator):
         #     print "Set up data_obj in __init__ function"
         #     self.set_up_dataset(self.data_obj)
         print "============Parameters==========="
-        print "embd_dim={}".format(self.embd_dim)
         print "hidden_dim_list={}".format(self.hidden_dim_list)
         print "activation_list={}".format(self.activation_list)
         print "batch_size={}".format(self.batch_size)
@@ -220,13 +218,13 @@ class RNN_Classifier(BaseEstimator):
         self.training(self.data_obj)
 
     def score(self,X,y=None):
-        loss,accuracy = self.rnn.evaluate([self.valid_X,self.valid_Y2],y=self.valid_Y1,batch_size=1000,verbose=0)
+        loss,accuracy = self.rnn.evaluate(self.valid_X,y=self.valid_Y1,batch_size=1000,verbose=0)
         print 'accuracy is {}%'.format(accuracy*100.)
         print "loss is {}".format(loss)
         return accuracy
 
 if __name__=='__main__':
-    rnn = RNN_Classifier(hidden_dim_list=[100,100],activation_list=['tanh','tanh'],
+    rnn = RNN_without_Context(hidden_dim_list=[100,20],activation_list=['tanh','tanh'],
                    batch_size=300,
                    max_epoch=200,optimiser='rmsprop',lr=0.001,decay=0.0,
                    momentum=0.0)

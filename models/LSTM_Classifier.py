@@ -12,10 +12,12 @@ def lstm_model(max_len=200,dof=70,embd_dim=2,
     embd_label = RepeatVector(max_len)(embd_label)
     encoded = merge([input, embd_label], mode='concat',concat_axis=2)
     for i, (dim, activation) in enumerate(zip(hidden_dim_list, activation_list)):
-        encoded = LSTM(output_dim=dim, activation=activation, return_sequences=True)(encoded)
         if i ==len(hidden_dim_list)-1:
             encoded = LSTM(output_dim=dim, activation=activation, return_sequences=False)(encoded)
-    encoded = Dense(output_dim=1, activation='sigmoid')(encoded)
+        else:
+            encoded = LSTM(output_dim=dim, activation=activation, return_sequences=True)(encoded)
+
+    encoded = Dense(output_dim=8, activation='sigmoid')(encoded)
     model = Model(input=[input, label_input], output = encoded, name='Encoder')
 
     if optimizer=='sgd':
