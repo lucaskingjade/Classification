@@ -127,7 +127,6 @@ class RNN_without_Context(BaseEstimator):
             index1 = np.where(Y1==act_label)[0]
             index2 = np.where(Y2 == em_label)[0]
             index = list(set(index1).intersection(index2))
-            print index
             missing_X.extend(X[index])
             missing_Y1.extend(Y1[index])
             missing_Y2.extend(Y2[index])
