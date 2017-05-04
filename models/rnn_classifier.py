@@ -124,7 +124,6 @@ class RNN_Classifier(BaseEstimator):
             index1 = np.where(Y1==act_label)[0]
             index2 = np.where(Y2 == em_label)[0]
             index = list(set(index1).intersection(index2))
-            print index
             missing_X.extend(X[index])
             missing_Y1.extend(Y1[index])
             missing_Y2.extend(Y2[index])
@@ -198,7 +197,6 @@ class RNN_Classifier(BaseEstimator):
         self.data_generator = self.batch_generator(X, Y, additional_labels, batch_size=batch_size)
 
         for X_batch,Y_batch, add_label in self.data_generator:
-            print "shape of Y_batch is {}".format(Y_batch.shape)
             self.rnn.train_on_batch(x=[X_batch,add_label],y=Y_batch)
 
 
