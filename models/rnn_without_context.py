@@ -196,7 +196,7 @@ class RNN_without_Context(BaseEstimator):
         self.data_generator = self.batch_generator(X, Y,batch_size=batch_size,shuffle=True)
 
         for X_batch,Y_batch in self.data_generator:
-            print "shape of Y_batch is {}".format(Y_batch.shape)
+            #print "shape of Y_batch is {}".format(Y_batch.shape)
             self.rnn.train_on_batch(x=X_batch,y=Y_batch)
 
 
