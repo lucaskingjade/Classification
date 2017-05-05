@@ -23,6 +23,7 @@ class RNN_Classifier(BaseEstimator):
         self.__dict__.update(args)
         print args.keys()
         self.save_configuration(args)
+        self.mark = False
 
     def set_up_model(self):
         self.rnn = self.rnn()
@@ -180,7 +181,8 @@ class RNN_Classifier(BaseEstimator):
 
 
     def training(self,data_obj=None):
-        if data_obj!=None:
+        if data_obj!=None and self.mark==False:
+            self.mark =True
             self.set_up_dataset(data_obj)
         self.set_up_model()
         self.init_loss_history_list()
