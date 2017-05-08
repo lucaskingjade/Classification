@@ -19,7 +19,7 @@ class RNN_without_Context(BaseEstimator):
                  lr=0.001,decay=0.0,
                  momentum=0.0,data_obj=None,remove_pairs=False,
                  rm_activities = ["Simple Walk"],
-                rm_emotions = ["Panic Fear"]):
+                rm_emotions = ["Panic Fear"],set_up_data=True):
 
         args = locals().copy()
         del args['self']
@@ -179,8 +179,11 @@ class RNN_without_Context(BaseEstimator):
 
 
     def training(self,data_obj=None):
-        if data_obj!=None:
+        if data_obj!=None and self.set_up_data == True:
             self.set_up_dataset(data_obj)
+            self.set_up_data = False
+        print "shape of missing training set is {}".format(self.train_missing_X.shape)
+        print "shape of training set is {}".format(self.train_X)
         self.set_up_model()
         self.init_loss_history_list()
         print "training set size: %d" % len(self.train_X)
