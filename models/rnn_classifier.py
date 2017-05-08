@@ -111,39 +111,37 @@ class RNN_Classifier(BaseEstimator):
 
 
     def remove_pairs_fn(self,X,Y1,Y2,activities,emotions):
-        missing_X = []
-        missing_Y1 = []
-        missing_Y2 = []
-        new_X = []
-        new_Y1 = []
-        new_Y2 = []
-
-        for activity,emotion in zip(activities,emotions):
-            #get label from name
-            act_label= get_label_by_name(activity,whichlabel=1)
-            em_label = get_label_by_name(emotion,whichlabel=2)
-            index1 = np.where(Y1==act_label)[0]
+        index = []
+        for activity, emotion in zip(activities, emotions):
+            # get label from name
+            act_label = get_label_by_name(activity, whichlabel=1)
+            em_label = get_label_by_name(emotion, whichlabel=2)
+            index1 = np.where(Y1 == act_label)[0]
             index2 = np.where(Y2 == em_label)[0]
-            index = list(set(index1).intersection(index2))
-            missing_X.extend(X[index])
-            missing_Y1.extend(Y1[index])
-            missing_Y2.extend(Y2[index])
-            mask = np.ones(len(X), np.bool)
-            mask[index] = 0
-            new_X.extend(X[mask])
-            new_Y1.extend(Y1[mask])
-            new_Y2.extend(Y2[mask])
+            cur_index = list(set(index1).intersection(index2))
+            index.extend(cur_index)
+        # print removed index
+        print "removed indexes are {}".format(index)
+
+        missing_X = X[index]
+        missing_Y1 = Y1[index]
+        missing_Y2 = Y2[index]
+        mask = np.ones(len(X), np.bool)
+        mask[index] = 0
+        new_X = X[mask]
+        new_Y1 = Y1[mask]
+        new_Y2 = Y2[mask]
         new_X = np.asarray(new_X)
         new_Y1 = np.asarray(new_Y1)
         new_Y2 = np.asarray(new_Y2)
         missing_X = np.asarray(missing_X)
         missing_Y1 = np.asarray(missing_Y1)
         missing_Y2 = np.asarray(missing_Y2)
-        new_Y1 = to_categorical(new_Y1,8)
-        missing_Y1 = to_categorical(missing_Y1,8)
+        new_Y1 = to_categorical(new_Y1, 8)
+        missing_Y1 = to_categorical(missing_Y1, 8)
         print "shape of new_Y1 is {}".format(new_Y1.shape)
         print "shape of missing_Y1 is {}".format(missing_Y1.shape)
-        return new_X,new_Y1,new_Y2,missing_X,missing_Y1,missing_Y2
+        return new_X, new_Y1, new_Y2, missing_X, missing_Y1, missing_Y2
 
     def rnn(self):
         input = Input(shape = (self.max_len,self.dof),name='input')
