@@ -79,6 +79,8 @@ class RNN_without_Context(BaseEstimator):
         self.test_Y2 = dataset_obj.test_Y2
         self.test_Y3 = dataset_obj.test_Y3
 
+        print "shape of train_X is {}".format(self.train_X.shape)
+        print "shape of train_X is {}".format(self.train_X.shape)
         #remove {"Simple Walk","Panic Fear"} pairs from training set
         if self.remove_pairs == True:
             # self.activities = ["Simple Walk"]
@@ -113,28 +115,26 @@ class RNN_without_Context(BaseEstimator):
 
 
     def remove_pairs_fn(self,X,Y1,Y2,activities,emotions):
-        missing_X = []
-        missing_Y1 = []
-        missing_Y2 = []
-        new_X = []
-        new_Y1 = []
-        new_Y2 = []
-
+        index = []
         for activity,emotion in zip(activities,emotions):
             #get label from name
             act_label= get_label_by_name(activity,whichlabel=1)
             em_label = get_label_by_name(emotion,whichlabel=2)
             index1 = np.where(Y1==act_label)[0]
             index2 = np.where(Y2 == em_label)[0]
-            index = list(set(index1).intersection(index2))
-            missing_X.extend(X[index])
-            missing_Y1.extend(Y1[index])
-            missing_Y2.extend(Y2[index])
-            mask = np.ones(len(X), np.bool)
-            mask[index] = 0
-            new_X.extend(X[mask])
-            new_Y1.extend(Y1[mask])
-            new_Y2.extend(Y2[mask])
+            cur_index = list(set(index1).intersection(index2))
+            index.extend(cur_index)
+        #print removed index
+        print "removed indexes are {}".format(index)
+
+        missing_X = X[index]
+        missing_Y1 = Y1[index]
+        missing_Y2 = Y2[index]
+        mask = np.ones(len(X), np.bool)
+        mask[index] = 0
+        new_X = X[mask]
+        new_Y1 = Y1[mask]
+        new_Y2 = Y2[mask]
         new_X = np.asarray(new_X)
         new_Y1 = np.asarray(new_Y1)
         new_Y2 = np.asarray(new_Y2)
@@ -183,7 +183,7 @@ class RNN_without_Context(BaseEstimator):
             self.set_up_dataset(data_obj)
             self.set_up_data = False
         print "shape of missing training set is {}".format(self.train_missing_X.shape)
-        print "shape of training set is {}".format(self.train_X)
+        print "shape of training set is {}".format(self.train_X.shape)
         self.set_up_model()
         self.init_loss_history_list()
         print "training set size: %d" % len(self.train_X)
