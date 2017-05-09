@@ -171,7 +171,7 @@ class RNN_without_Context(BaseEstimator):
     def batch_generator(self,iterable1,iterable2,batch_size=1,shuffle=False):
         l = len(iterable1)
         if shuffle ==True:
-            np.random.seed(1235)
+            #np.random.seed(1235)
             indices = np.random.permutation(len(iterable1))
         else:
             indices = np.arange(0,stop=len(iterable1))
@@ -283,10 +283,9 @@ class RNN_without_Context(BaseEstimator):
         self.set_up_model()
         self.init_loss_history_list()
         print "training set size: %d" % len(self.train_X)
+        np.random.seed(1235)
         for epoch in range(self.max_epoch):
             print('Epoch seen: {}'.format(epoch))
-            #self.train_Y2= self.train_Y2.reshape(self.train_Y2.shape[0],1,1)
-            #print "shape of train_Y1 is {}".format(self.train_Y1.shape)
             self.training_loop(self.train_X,self.train_Y1,batch_size=self.batch_size)
             # compute loss value on validation set
             self.compute_loss_history('training')

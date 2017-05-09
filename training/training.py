@@ -1,7 +1,7 @@
 from Classification.models.rnn_classifier import *
 from Classification.data.dataset import Emilya_Dataset
 
-rnn = RNN_Classifier(hidden_dim_list=[100, 20], activation_list=['tanh', 'tanh'],
+rnn = RNN_Classifier(embd_dim=3, hidden_dim_list=[100, 20], activation_list=['tanh', 'tanh'],
                      batch_size=300,
                      max_epoch=200, optimiser='rmsprop', lr=0.005, decay=0.0,
                      momentum=0.0,remove_pairs=True,
