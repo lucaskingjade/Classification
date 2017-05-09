@@ -128,7 +128,7 @@ class RNN_without_Context(BaseEstimator):
             cur_index = list(set(index1).intersection(index2))
             index.extend(cur_index)
         #print removed index
-        print "shape of removed indexes are {}".format(index.shape)
+        print "shape of removed indexes are {}".format(len(index))
         print "shape of X is {}".format(X.shape)
 
         missing_X = X[index]
