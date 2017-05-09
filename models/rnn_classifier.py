@@ -169,6 +169,7 @@ class RNN_Classifier(BaseEstimator):
     def batch_generator(self,iterable1,iterable2,iterable3,batch_size=1,shuffle=False):
         l = len(iterable1)
         if shuffle ==True:
+            np.random.seed(1235)
             indices = np.random.permutation(len(iterable1))
         else:
             indices = np.arange(0,stop=len(iterable1))
