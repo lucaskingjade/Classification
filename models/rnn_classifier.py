@@ -266,6 +266,11 @@ class RNN_Classifier(BaseEstimator):
         plt.legend(legend_str, fontsize=10)
         plt.savefig('./accuracy_test_and_missing.png')
 
+    def save_models(self):
+        self.rnn.save_weights('rnn.h5')
+        with open('rnn.yaml','w') as yaml_file:
+            yaml_file.write(self.rnn.to_yaml())
+
 
     def training(self,data_obj=None):
         if data_obj!=None and self.mark==False:
@@ -289,7 +294,8 @@ class RNN_Classifier(BaseEstimator):
         np.savez('loss_history.npz',self.loss_history)
         #plot training and valid set loss and accuracy
         self.plot_loss()
-
+        #save model
+        self.save_models()
 
     def training_loop(self, X,Y1,Y2, batch_size):
         # batch generator

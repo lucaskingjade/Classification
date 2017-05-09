@@ -200,32 +200,28 @@ class RNN_without_Context(BaseEstimator):
         if dataset == 'training':
             X = self.train_X
             Y1 = self.train_Y1
-            Y2 = self.train_Y2
             str_loss = "loss_train"
             str_accuracy = "accuracy_train"
         elif dataset=='valid':
             X = self.valid_X
             Y1 = self.valid_Y1
-            Y2 = self.valid_Y2
             str_loss = "loss_valid"
             str_accuracy = "accuracy_valid"
         elif dataset =='test':
             X = self.test_X
             Y1 = self.test_Y1
-            Y2 = self.test_Y2
             str_loss = "loss_test"
             str_accuracy = "accuracy_test"
         elif dataset =='test_missing':
             X = self.test_missing_X
             Y1 = self.test_missing_Y1
-            Y2 = self.test_missing_Y2
             str_loss = "loss_missing_test"
             str_accuracy = "accuracy_missing_test"
         else:
             raise ValueError()
 
         self.loss_history[str_loss], self.loss_history[str_accuracy] =\
-            self.rnn.evaluate([X,Y2],y=Y1,batch_size = 1000,verbose =0)
+            self.rnn.evaluate(X,y=Y1,batch_size = 1000,verbose =0)
 
 
     def plot_loss(self):
@@ -271,6 +267,11 @@ class RNN_without_Context(BaseEstimator):
         plt.legend(legend_str, fontsize=10)
         plt.savefig('./accuracy_test_and_missing.png')
 
+    def save_models(self):
+        self.rnn.save_weights('rnn.h5')
+        with open('rnn.yaml','w') as yaml_file:
+            yaml_file.write(self.rnn.to_yaml())
+
 
     def training(self,data_obj=None):
         if data_obj!=None and self.set_up_data == True:
@@ -298,6 +299,11 @@ class RNN_without_Context(BaseEstimator):
         np.savez('loss_history.npz', self.loss_history)
         # plot training and valid set loss and accuracy
         self.plot_loss()
+        # save model
+        self.save_models()
+
+
+
 
     def training_loop(self, X,Y, batch_size):
         # batch generator
