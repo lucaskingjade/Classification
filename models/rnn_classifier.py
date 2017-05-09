@@ -219,9 +219,9 @@ class RNN_Classifier(BaseEstimator):
         else:
             raise ValueError()
 
-        self.loss_history[str_loss], self.loss_history[str_accuracy] =\
-            self.rnn.evaluate([X,Y2],y=Y1,batch_size = 1000,verbose =0)
-
+        loss,accuracy = self.rnn.evaluate([X,Y2],y=Y1,batch_size = 1000,verbose =0)
+        self.loss_history[str_loss].append(loss)
+        self.loss_history[str_accuracy].append(accuracy)
 
     def plot_loss(self):
         # plot mse
