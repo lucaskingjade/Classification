@@ -8,6 +8,10 @@ from keras.optimizers import SGD,RMSprop
 from sklearn.base import BaseEstimator
 from Classification.data.Emilya_Dataset.EmilyData_utils import get_label_by_name
 from keras.utils.np_utils import to_categorical
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 class RNN_without_Context(BaseEstimator):
 
@@ -83,19 +87,18 @@ class RNN_without_Context(BaseEstimator):
         print "shape of train_X is {}".format(self.train_X.shape)
         #remove {"Simple Walk","Panic Fear"} pairs from training set
         if self.remove_pairs == True:
-            # self.activities = ["Simple Walk"]
-            # emotions = ["Panic Fear"]
-
             activities = self.rm_activities
             emotions = self.rm_emotions
             print "remove paris:{0},{1}".format(activities,emotions)
             self.train_X, self.train_Y1,self.train_Y2,\
             self.train_missing_X,self.train_missing_Y1,self.train_missing_Y2\
                 = self.remove_pairs_fn(self.train_X,self.train_Y1,self.train_Y2,activities,emotions)
+
             self.valid_X, self.valid_Y1,self.valid_Y2,\
             self.valid_missing_X,self.valid_missing_Y1,self.valid_missing_Y2\
                 = self.remove_pairs_fn(self.valid_X, self.valid_Y1, self.valid_Y2, activities,
                                                                      emotions)
+
             self.test_X, self.test_Y1,self.test_Y2,\
             self.test_missing_X,self.test_missing_Y1,self.test_missing_Y2\
                 = self.remove_pairs_fn(self.test_X, self.test_Y1, self.test_Y2, activities,
@@ -125,7 +128,8 @@ class RNN_without_Context(BaseEstimator):
             cur_index = list(set(index1).intersection(index2))
             index.extend(cur_index)
         #print removed index
-        print "removed indexes are {}".format(index)
+        print "shape of removed indexes are {}".format(index.shape)
+        print "shape of X is {}".format(X.shape)
 
         missing_X = X[index]
         missing_Y1 = Y1[index]
@@ -143,6 +147,11 @@ class RNN_without_Context(BaseEstimator):
         missing_Y2 = np.asarray(missing_Y2)
         new_Y1 = to_categorical(new_Y1,8)
         missing_Y1 = to_categorical(missing_Y1,8)
+
+        assert missing_X.shape[0] == len(missing_Y1) and missing_X.shape[0] == len(missing_Y2)
+        assert new_X.shape[0] == len(new_Y1) and len(new_Y1) == len(new_Y2)
+        assert missing_X.shape[0] + new_X.shape[0] == X.shape[0]
+
         print "shape of new_Y1 is {}".format(new_Y1.shape)
         print "shape of missing_Y1 is {}".format(missing_Y1.shape)
         return new_X,new_Y1,new_Y2,missing_X,missing_Y1,missing_Y2
@@ -162,6 +171,7 @@ class RNN_without_Context(BaseEstimator):
     def batch_generator(self,iterable1,iterable2,batch_size=1,shuffle=False):
         l = len(iterable1)
         if shuffle ==True:
+            np.random.seed(1235)
             indices = np.random.permutation(len(iterable1))
         else:
             indices = np.arange(0,stop=len(iterable1))
@@ -175,7 +185,91 @@ class RNN_without_Context(BaseEstimator):
                              "accuracy_train": [],
                              "loss_valid": [],
                              "accuracy_valid": [],
+                             "loss_test":[],
+                             "accuracy_test":[],
+                             "loss_missing_test":[],
+                             "accuracy_missing_test":[]
                              }
+
+
+    def print_loss_history(self):
+        for loss_key in sorted(self.loss_history.keys()):
+            print "%s:%f"%(loss_key,self.loss_history[loss_key][-1])
+
+    def compute_loss_history(self,dataset='training'):
+        if dataset == 'training':
+            X = self.train_X
+            Y1 = self.train_Y1
+            Y2 = self.train_Y2
+            str_loss = "loss_train"
+            str_accuracy = "accuracy_train"
+        elif dataset=='valid':
+            X = self.valid_X
+            Y1 = self.valid_Y1
+            Y2 = self.valid_Y2
+            str_loss = "loss_valid"
+            str_accuracy = "accuracy_valid"
+        elif dataset =='test':
+            X = self.test_X
+            Y1 = self.test_Y1
+            Y2 = self.test_Y2
+            str_loss = "loss_test"
+            str_accuracy = "accuracy_test"
+        elif dataset =='test_missing':
+            X = self.test_missing_X
+            Y1 = self.test_missing_Y1
+            Y2 = self.test_missing_Y2
+            str_loss = "loss_missing_test"
+            str_accuracy = "accuracy_missing_test"
+        else:
+            raise ValueError()
+
+        self.loss_history[str_loss], self.loss_history[str_accuracy] =\
+            self.rnn.evaluate([X,Y2],y=Y1,batch_size = 1000,verbose =0)
+
+
+    def plot_loss(self):
+        # plot mse
+        plt.figure(figsize=(5,5))
+        legend_str =[]
+        plt.plot(self.loss_history["loss_train"])
+        legend_str.append('loss_train'+':%f' % self.loss_history["loss_train"][-1])
+        plt.plot(self.loss_history["loss_valid"])
+        legend_str.append('loss_valid'+':%f' % self.loss_history["loss_valid"][-1])
+        plt.legend(legend_str)
+        plt.savefig('./learning_curve.png')
+
+        #plot accuracy of rnn
+        plt.figure(figsize=(5,5))
+        legend_str = []
+        plt.plot(self.loss_history['accuracy_train'])
+        legend_str.append('accuracy_train:%f'%self.loss_history['accuracy_train'][-1])
+        plt.plot(self.loss_history['accuracy_valid'])
+        legend_str.append('accuracy_valid:%f' % self.loss_history['accuracy_valid'][-1])
+        plt.legend(legend_str,fontsize=10)
+        plt.savefig('./accuracy_curve.png')
+
+        # plot loss on test set and test_missing_set
+        plt.figure(figsize=(5, 5))
+        legend_str = []
+        plt.plot(self.loss_history['loss_test'])
+        legend_str.append('loss_test:%f' % self.loss_history['loss_test'][-1])
+        plt.plot(self.loss_history['loss_missing_test'])
+        legend_str.append(
+            'loss_missing_test:%f' % self.loss_history['loss_missing_test'][-1])
+        plt.legend(legend_str,fontsize=10)
+        plt.savefig('./loss_test_and_missing.png')
+
+        #plot accuracy on test and test_missing set
+        plt.figure(figsize=(5, 5))
+        legend_str = []
+        plt.plot(self.loss_history['accuracy_test'])
+        legend_str.append('accuracy_test:%f' % self.loss_history['accuracy_test'][-1])
+        plt.plot(self.loss_history['accuracy_missing_test'])
+        legend_str.append(
+            'accuracy_missing_test:%f' % self.loss_history['accuracy_missing_test'][-1])
+        plt.legend(legend_str, fontsize=10)
+        plt.savefig('./accuracy_test_and_missing.png')
 
 
     def training(self,data_obj=None):
@@ -189,17 +283,26 @@ class RNN_without_Context(BaseEstimator):
         print "training set size: %d" % len(self.train_X)
         for epoch in range(self.max_epoch):
             print('Epoch seen: {}'.format(epoch))
-
             #self.train_Y2= self.train_Y2.reshape(self.train_Y2.shape[0],1,1)
-            print "shape of train_Y1 is {}".format(self.train_Y1.shape)
+            #print "shape of train_Y1 is {}".format(self.train_Y1.shape)
             self.training_loop(self.train_X,self.train_Y1,batch_size=self.batch_size)
+            # compute loss value on validation set
+            self.compute_loss_history('training')
+            self.compute_loss_history('valid')
+            self.compute_loss_history('test')
+            self.compute_loss_history('test_missing')
+            # print loss value
+            self.print_loss_history()
+
+            # save loss and accuracy as npz file
+        np.savez('loss_history.npz', self.loss_history)
+        # plot training and valid set loss and accuracy
+        self.plot_loss()
 
     def training_loop(self, X,Y, batch_size):
         # batch generator
         self.data_generator = self.batch_generator(X, Y,batch_size=batch_size,shuffle=True)
-
         for X_batch,Y_batch in self.data_generator:
-            #print "shape of Y_batch is {}".format(Y_batch.shape)
             self.rnn.train_on_batch(x=X_batch,y=Y_batch)
 
 

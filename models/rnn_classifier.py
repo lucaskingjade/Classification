@@ -83,8 +83,6 @@ class RNN_Classifier(BaseEstimator):
 
         #remove {"Simple Walk","Panic Fear"} pairs from training set
         if self.remove_pairs == True:
-            # self.activities = ["Simple Walk"]
-            # emotions = ["Panic Fear"]
 
             activities = self.rm_activities
             emotions = self.rm_emotions
@@ -277,6 +275,7 @@ class RNN_Classifier(BaseEstimator):
         self.init_loss_history_list()
         print "training set size: %d" % len(self.train_X)
         for epoch in range(self.max_epoch):
+            print('Epoch seen: {}'.format(epoch))
             self.training_loop(self.train_X,self.train_Y1,self.train_Y2,batch_size=self.batch_size)
             #compute loss value on validation set
             self.compute_loss_history('training')
