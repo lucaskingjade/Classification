@@ -24,7 +24,7 @@ At the early stage of training process, the emotion embeddings have not been lea
 
 In order to stable the learning process and accelerate the covergence speed, there is one possible strategy as following:
 
-Assume we have a training set <img src="https://rawgit.com/lucaskingjade/Classification/master/svgs/6eca9d8c59c1fccb0b3aee38dcb65c33.svg?invert_in_darkmode" align=middle width=85.05486pt height=22.38192pt/>, where <img src="https://rawgit.com/lucaskingjade/Classification/master/svgs/4a0dab614eaf1e6dc58146666d67ace8.svg?invert_in_darkmode" align=middle width=20.09601pt height=22.38192pt/> is the subset where all the sequences are labeled by emotions, while <img src="https://rawgit.com/lucaskingjade/Classification/master/svgs/f6fac43e354f1b2ca85658091df26df1.svg?invert_in_darkmode" align=middle width=20.09601pt height=22.38192pt/> is the one where the sequences are not labeled by emotions.
+Assume we have a training set <img src="https://rawgit.com/lucaskingjade/Classification/None/svgs/6eca9d8c59c1fccb0b3aee38dcb65c33.svg?invert_in_darkmode" align=middle width=85.05486pt height=22.38192pt/>, where <img src="https://rawgit.com/lucaskingjade/Classification/None/svgs/4a0dab614eaf1e6dc58146666d67ace8.svg?invert_in_darkmode" align=middle width=20.09601pt height=22.38192pt/> is the subset where all the sequences are labeled by emotions, while <img src="https://rawgit.com/lucaskingjade/Classification/None/svgs/f6fac43e354f1b2ca85658091df26df1.svg?invert_in_darkmode" align=middle width=20.09601pt height=22.38192pt/> is the one where the sequences are not labeled by emotions.
 
 
 ```
