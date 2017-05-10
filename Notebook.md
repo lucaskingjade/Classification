@@ -1,10 +1,10 @@
 # Record for Classification Project
 
-##1. Grid Search For Classification
+## 1. Grid Search For Classification
 ### table
 This is a table:
 
-    |[100,20,20],dim_embd=3|[100,50,50],dim_embd=2|[100,20,20],dim_embd=3|[100,50,50],dim_embd=3|
+  |[100,20,20],dim_embd=3|[100,50,50],dim_embd=2|[100,20,20],dim_embd=3|[100,50,50],dim_embd=3|
 ---------|---------|---------| ---------------------- | ---------------------- |    
 lr = 0.01| 85.084%| 75.747%| 79.55%| 76.835%| 
 lr = 0.005|88.114%| 77.811%|86.976%| 76.839%| 
