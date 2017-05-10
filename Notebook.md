@@ -5,11 +5,6 @@
 
 This is a table:
 
-   adf|First Header  | Second Header
----|------------- | -------------
-   dsaf|Content Cell  | Content Cell
-   afdaf|Content Cell  | Content Cell
-
 lr|[100,20,20],dim_embd=3|[100,50,50],dim_embd=2|[100,20,20],dim_embd=3|[100,50,50],dim_embd=3
 -------------|-----------------|----------------------| ---------------------|----------------------
 lr=0.01      |85.084%| 75.747%| 79.55%| 76.835%
