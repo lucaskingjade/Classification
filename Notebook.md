@@ -5,6 +5,11 @@
 
 This is a table:
 
+   |First Header  | Second Header
+---|------------- | -------------
+   |Content Cell  | Content Cell
+   |Content Cell  | Content Cell
+
  |[100,20,20],dim_embd=3|[100,50,50],dim_embd=2|[100,20,20],dim_embd=3|[100,50,50],dim_embd=3
 ------|-----------------|----------------------| ---------------------|----------------------
 lr = 0.01| 85.084%| 75.747%| 79.55%| 76.835%
@@ -33,10 +38,7 @@ For each batch:
 
 ```
 
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
+
 
 
 
