@@ -24,7 +24,8 @@ At the early stage of training process, the emotion embeddings have not been lea
 
 In order to stable the learning process and accelerate the covergence speed, there is one possible strategy as following:
 
-Assume we have a training set <math>X={X_1,X_2}</math>, where $X_1$
+Assume we have a training set $X={X_1,X_2}$, where $X_1$ is the subset where all the sequences are labeled by emotions, while $X_2$ is the one where the sequences are not labeled by emotions.
+
 
 ```
 Algorithm:
