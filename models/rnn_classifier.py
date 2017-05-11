@@ -20,7 +20,8 @@ class RNN_Classifier(BaseEstimator):
                  lr=0.001,decay=0.0,
                  momentum=0.0,data_obj=None,remove_pairs=False,
                  rm_activities = ["Simple Walk"],
-                rm_emotions = ["Panic Fear"],constant_initializer=False,constant_value=0.01):
+                rm_emotions = ["Panic Fear"],constant_initializer=False,
+                 constant_value=0.01,constraint='unitnorm'):
 
         args = locals().copy()
         del args['self']
@@ -153,10 +154,13 @@ class RNN_Classifier(BaseEstimator):
         label_input = Input(shape=(1,), name='label_input')
         if self.constant_initializer == True:
             init_constant = Constant(value=self.constant_value)
-            embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,embeddings_initializer=init_constant)(label_input)
+            embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
+                                   embeddings_initializer=init_constant,
+                                   embeddings_constraint=self.constraint)(label_input)
         else:
-            embd_label = Embedding(input_dim=8, output_dim=self.embd_dim)(
-                label_input)
+            embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
+                                   embeddings_constraint=self.constraint)(label_input)
+
         embd_label = Reshape(target_shape=(self.embd_dim,))(embd_label)
         embd_label = RepeatVector(self.max_len)(embd_label)
         encoded = merge([input, embd_label], mode='concat', concat_axis=2)
