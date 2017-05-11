@@ -156,7 +156,7 @@ class RNN_Classifier(BaseEstimator):
             init_constant = Constant(value=self.constant_value)
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
                                    embeddings_initializer=init_constant,
-                                   embeddings_constraint=self.constraint)(label_input)
+                                   embeddings_constraint=self.constraint,name='embedding_1')(label_input)
         else:
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
                                    embeddings_constraint=self.constraint)(label_input)
@@ -195,6 +195,9 @@ class RNN_Classifier(BaseEstimator):
                              "loss_missing_test":[],
                              "accuracy_missing_test":[]
                              }
+        self.embedding_history = []
+
+
     def print_loss_history(self):
         for loss_key in sorted(self.loss_history.keys()):
             print "%s:%f"%(loss_key,self.loss_history[loss_key][-1])
@@ -292,6 +295,9 @@ class RNN_Classifier(BaseEstimator):
         for epoch in range(self.max_epoch):
             print('Epoch seen: {}'.format(epoch))
             self.training_loop(self.train_X,self.train_Y1,self.train_Y2,batch_size=self.batch_size)
+            #each epoch save the learned embedding
+            cur_embedding = self.rnn.layers['embedding_1'].get_weights()
+            self.embedding_history.append(cur_embedding)
             #compute loss value on validation set
             self.compute_loss_history('training')
             self.compute_loss_history('valid')
@@ -300,6 +306,10 @@ class RNN_Classifier(BaseEstimator):
             #print loss value
             self.print_loss_history()
 
+        #save embedding_history
+        self.embedding_history= np.asarray(self.embedding_history)
+        print "shape of embedding_history is {}".format(self.embedding_history.shape)
+        np.savez('embedding_history.npz',self.embedding_history)
         #save loss and accuracy as npz file
         np.savez('loss_history.npz',self.loss_history)
         #plot training and valid set loss and accuracy
