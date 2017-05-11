@@ -20,7 +20,7 @@ class RNN_Classifier(BaseEstimator):
                  lr=0.001,decay=0.0,
                  momentum=0.0,data_obj=None,remove_pairs=False,
                  rm_activities = ["Simple Walk"],
-                rm_emotions = ["Panic Fear"],constant_initializer=False):
+                rm_emotions = ["Panic Fear"],constant_initializer=False,constant_value=0.01):
 
         args = locals().copy()
         del args['self']
@@ -152,7 +152,7 @@ class RNN_Classifier(BaseEstimator):
         input = Input(shape = (self.max_len,self.dof),name='input')
         label_input = Input(shape=(1,), name='label_input')
         if self.constant_initializer == True:
-            init_constant = Constant(value=0.01)
+            init_constant = Constant(value=self.constant_value)
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,embeddings_initializer=init_constant)(label_input)
         else:
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim)(
