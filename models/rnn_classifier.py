@@ -21,7 +21,7 @@ class RNN_Classifier(BaseEstimator):
                  momentum=0.0,data_obj=None,remove_pairs=False,
                  rm_activities = ["Simple Walk"],
                 rm_emotions = ["Panic Fear"],constant_initializer=False,
-                 constant_value=0.01,constraint='unitnorm'):
+                 constant_value=0.01,constraint=None):
 
         args = locals().copy()
         del args['self']
