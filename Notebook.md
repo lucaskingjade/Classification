@@ -1,40 +1,35 @@
 # Record for Classification Project
 
-## 1. Grid Search For Classification
-### table
-
-This is a table:
-
-lr|[100,20,20],dim_embd=3|[100,50,50],dim_embd=2|[100,20,20],dim_embd=3|[100,50,50],dim_embd=3
--------------|-----------------|----------------------| ---------------------|----------------------
-lr=0.01      |85.084%| 75.747%| 79.55%| 76.835%
-lr = 0.005   |88.114%| 77.811%|86.976%| 76.839% 
-lr = 0.001   |87.096%|83.409%|88.85%|88.484%
-lr = 0.0005  |87.531%|87.827%|87.383%|87.568%
-
-## 2. Analysis of Training Classification Model with Emotion Embedding
+## 1. Analysis of Training Classification Model with Emotion Embedding
 
 ### Phenomenon: The trainig process is very unstable.
-For example, here is a screenshot:
+
+### RNN classifier with a 3-dimensional embedding of emotion.
+missing pairs:{"Simple Walk","Panic Fear"},{"Sitting Down","Sadness"},{"Move Books","Joy"}<br>
+Dataset: Emilya Dataset<br>
+Training Set: 60% of Emilya Dataset and remove the missing paris.<br>
+Validation Set: 20% Emilya Dataset<br>
+Test Set: 20% of Emilya Dataset, missing paris are removed<br>
+missing_test: The missing pairs removed during constructing Test Set<br>
+
+
 
 ![General preferences pane](./figs/screen1.png)
 
+#### a. accuracy curve(x-axis: epochs, y-axis: accuracy)
+![General preferences pane](./training/Emilya_Dataset/expr0905/expr001/accuracy_curve.png)
+
+#### b. accuracy on test set and missing-pairs set.
+![General preferences pane](./training/Emilya_Dataset/expr0905/expr001/accuracy_test_and_missing.png)
+
+
 ### explanation:
-At the early stage of training process, the emotion embeddings have not been learned well. Some very different emotions may be close with each other in the embedding space, while the embeedings of some emotions which are similar essentially may be far away with each other. This makes the classification model tends to overfit for each emotion. So in the early stage, when update the the embedding of emotions, it the beheviour might change dramatically. Thus, the instantaneous performance of classification can decrease dramatically as seen in the above image. 
+At the early stage of training process, the emotion embeddings have not been learned well. Some very different emotions may be close with each other in the embedding space, while the embeedings of some emotions which are similar essentially may be far away with each other. This makes the classification model tends to overfit for each emotion. So in the early stage, when update the the embedding of emotions, the beheviour of the model might change dramatically. Thus, the instantaneous performance of classification can decrease dramatically as seen in the above image. 
 
 In order to stable the learning process and accelerate the covergence speed, there is one possible strategy as following:
 
 Assume we have a training set $X={X_1,X_2}$, where $X_1$ is the subset where all the sequences are labeled by emotions, while $X_2$ is the one where the sequences are not labeled by emotions.
-
-
-```
-Algorithm:
-For each batch:
-	
-
-```
-
-
+Before each epoch of training process, we randomly assign emotion labels to $X_2$ and then use $X$ train the models. 
 
 
 
