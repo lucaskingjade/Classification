@@ -4,7 +4,7 @@
 from keras.models import Model
 from keras.layers import LSTM,Dense,merge,Input,Embedding,RepeatVector,Reshape
 import numpy as np
-from keras.optimizers import SGD,RMSprop
+from keras.optimizers import SGD,RMSprop,Adam
 from sklearn.base import BaseEstimator
 from Classification.data.Emilya_Dataset.EmilyData_utils import get_label_by_name
 from keras.utils.np_utils import to_categorical
@@ -15,15 +15,14 @@ import matplotlib.pyplot as plt
 
 class RNN_without_Context(BaseEstimator):
 
-    def __init__(self,
-                 hidden_dim_list=[100,100],
+    def __init__(self,hidden_dim_list=[100,100],
                  activation_list=['tanh','tanh'],
                  batch_size=300,max_epoch=200,
-                 optimiser='rmsprop',
-                 lr=0.001,decay=0.0,
-                 momentum=0.0,data_obj=None,remove_pairs=False,
-                 rm_activities = ["Simple Walk"],
-                rm_emotions = ["Panic Fear"],set_up_data=True):
+                 optimiser='rmsprop',lr=0.001,
+                 decay=0.0,nesterov=False,
+                 momentum=0.0,data_obj=None,
+                 remove_pairs=False,rm_activities = ["Simple Walk"],
+                 rm_emotions = ["Panic Fear"],set_up_data=True):
 
         args = locals().copy()
         del args['self']
@@ -39,9 +38,12 @@ class RNN_without_Context(BaseEstimator):
 
     def compile(self):
         if self.optimiser=='sgd':
-            optimizer = SGD(lr=self.lr)
+            optimizer = SGD(lr=self.lr,momentum=self.momentum,
+                            decay=self.decay,nesterov=self.nesterov)
         elif self.optimiser=='rmsprop':
             optimizer = RMSprop(lr=self.lr)
+        elif self.optimiser =='adam':
+            optimizer = Adam(lr=self.lr,decay=self.decay)
         else:
             pass
         self.rnn.compile(optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
