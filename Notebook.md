@@ -30,7 +30,10 @@ See this figure:
 
 ![General preferences pane](./figs/screen2.png)
 
-
+#### a. accuracy curve(x-axis: epochs, y-axis: accuracy(range: 0 - 1.))
+![General preferences pane](./training/Emilya_Dataset/expr0905/expr002/accuracy_curve.png)
+#### b. accuracy on test set and missing-pairs set.
+![General preferences pane](./training/Emilya_Dataset/expr0905/expr002/accuracy_test_and_missing.png)
 
 
 
@@ -42,6 +45,7 @@ Assume we have a training set $X={X_1,X_2}$, where $X_1$ is the subset where all
 Before each epoch of training process, we randomly assign emotion labels to $X_2$ and then use $X$ train the models. 
 
 Thierry: Do you have any ideas?
+
 
 
 
