@@ -32,7 +32,7 @@ class RNN_Classifier(BaseEstimator):
         self.mark = False
 
     def set_up_model(self):
-        self.rnn = self.rnn()
+        self.rnn = self.RNN()
         self.compile()
         #summary of model
         self.rnn.summary()
@@ -153,7 +153,7 @@ class RNN_Classifier(BaseEstimator):
         print "shape of missing_Y1 is {}".format(missing_Y1.shape)
         return new_X, new_Y1, new_Y2, missing_X, missing_Y1, missing_Y2
 
-    def rnn(self):
+    def RNN(self):
         input = Input(shape = (self.max_len,self.dof),name='input')
         label_input = Input(shape=(1,), name='label_input')
         if self.constant_initializer == True:
