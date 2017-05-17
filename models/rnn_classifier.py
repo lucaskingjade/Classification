@@ -1,7 +1,7 @@
 from keras.models import Model
 from keras.layers import LSTM,Dense,merge,Input,Embedding,RepeatVector,Reshape
 import numpy as np
-from keras.optimizers import SGD,RMSprop
+from keras.optimizers import SGD,RMSprop,Adam
 from sklearn.base import BaseEstimator
 from Classification.data.Emilya_Dataset.EmilyData_utils import get_label_by_name
 from keras.utils.np_utils import to_categorical
@@ -41,6 +41,8 @@ class RNN_Classifier(BaseEstimator):
             optimizer = SGD(lr=self.lr)
         elif self.optimiser=='rmsprop':
             optimizer = RMSprop(lr=self.lr)
+        elif self.optimiser=='adam':
+            optimizer = Adam(lr=self.lr,decay=self.decay)
         else:
             pass
         self.rnn.compile(optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
