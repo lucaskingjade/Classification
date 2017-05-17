@@ -18,7 +18,8 @@ class RNN_Classifier(BaseEstimator):
                  batch_size=300,max_epoch=200,
                  optimiser='rmsprop',
                  lr=0.001,decay=0.0,
-                 momentum=0.0,data_obj=None,remove_pairs=False,
+                 momentum=0.0,nesterov=False,
+                 data_obj=None,remove_pairs=False,
                  rm_activities = ["Simple Walk"],
                 rm_emotions = ["Panic Fear"],constant_initializer=False,
                  constant_value=0.01,constraint=None):
@@ -38,9 +39,9 @@ class RNN_Classifier(BaseEstimator):
 
     def compile(self):
         if self.optimiser=='sgd':
-            optimizer = SGD(lr=self.lr)
+            optimizer = SGD(lr=self.lr,momentum=self.momentum,decay=self.decay,nesterov=self.nesterov)
         elif self.optimiser=='rmsprop':
-            optimizer = RMSprop(lr=self.lr)
+            optimizer = RMSprop(lr=self.lr,decay=self.decay)
         elif self.optimiser=='adam':
             optimizer = Adam(lr=self.lr,decay=self.decay)
         else:
