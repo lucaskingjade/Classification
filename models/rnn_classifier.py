@@ -160,10 +160,10 @@ class RNN_Classifier(BaseEstimator):
             init_constant = Constant(value=self.constant_value)
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
                                    embeddings_initializer=init_constant,
-                                   embeddings_constraint=self.constraint,name='embedding_1')(label_input)
+                                   embeddings_constraint=self.constraint,name='embedding_1',trainable=False)(label_input)
         else:
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
-                                   embeddings_constraint=self.constraint)(label_input)
+                                   embeddings_constraint=self.constraint,trainable=False)(label_input)
 
         embd_label = Reshape(target_shape=(self.embd_dim,))(embd_label)
         embd_label = RepeatVector(self.max_len)(embd_label)
@@ -298,6 +298,12 @@ class RNN_Classifier(BaseEstimator):
         np.random.seed(1235)
         for epoch in range(self.max_epoch):
             print('Epoch seen: {}'.format(epoch))
+            #when accuracy of training set<85%,embedding trainable=False
+            if epoch!=0:
+                if self.loss_history['accuracy_train'][-1]>0.85:
+                    self.rnn.get_layer['embedding_1'].trainable=True
+                    print "begin learning embedding"
+
             self.training_loop(self.train_X,self.train_Y1,self.train_Y2,batch_size=self.batch_size)
             #each epoch save the learned embedding
             cur_embedding = self.rnn.get_layer("embedding_1").get_weights()
