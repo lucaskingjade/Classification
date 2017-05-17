@@ -47,6 +47,7 @@ class RNN_Classifier(BaseEstimator):
         else:
             pass
         self.rnn.compile(optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
     def save_configuration(self,arguments):
         with open('meta_data.txt','w') as file:
             file.writelines("========Meta Data========\r\n")
@@ -299,7 +300,7 @@ class RNN_Classifier(BaseEstimator):
             print('Epoch seen: {}'.format(epoch))
             self.training_loop(self.train_X,self.train_Y1,self.train_Y2,batch_size=self.batch_size)
             #each epoch save the learned embedding
-            cur_embedding = self.rnn.layers['embedding_1'].get_weights()
+            cur_embedding = self.rnn.get_layer("embedding_1").get_weights()
             self.embedding_history.append(cur_embedding)
             #compute loss value on validation set
             self.compute_loss_history('training')
