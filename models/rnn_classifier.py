@@ -301,13 +301,13 @@ class RNN_Classifier(BaseEstimator):
             #when accuracy of training set<85%,embedding trainable=False
             if self.threshold_embd != None:
                 if epoch==0:
-                    self.rnn.get_layer['embedding_1'].trainable = False
+                    self.rnn.get_layer('embedding_1').trainable = False
                 else:
                     if self.loss_history['accuracy_train'][-1]>self.threshold_embd:
-                        self.rnn.get_layer['embedding_1'].trainable=True
+                        self.rnn.get_layer('embedding_1').trainable=True
                         print "embedding trainable"
                     else:
-                        self.rnn.get_layer['embedding_1'].trainable = False
+                        self.rnn.get_layer('embedding_1').trainable = False
 
             self.training_loop(self.train_X,self.train_Y1,self.train_Y2,batch_size=self.batch_size)
             #each epoch save the learned embedding
