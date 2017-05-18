@@ -44,8 +44,36 @@ For addressing this problem, I am thinking about some methods. One of possible w
 Assume we have a training set $X={X_1,X_2}$, where $X_1$ is the subset where all the sequences are labeled by emotions, while $X_2$ is the one where the sequences are not labeled by emotions.
 Before each epoch of training process, we randomly assign emotion labels to $X_2$ and then use $X$ train the models. 
 
-Thierry: Do you have any ideas?
+*******************************************************************
 
+# 2. 18 May,2017 
+#### After multiple experiments, I found that 'Adam' optimiser makes the learning process of RNN classifier more stable than other optimisers. 
+
+## Expr1: Activity classifier without emotion input
+#### Experiment setting: 
+hidden\_dim\_list=[100, 20], activation_list=['tanh', 'tanh'], <br>
+max_epoch=50, optimiser='adam', lr=0.005, decay=1e-4,<br>
+missing pairs:{"Simple Walk","Panic Fear"},{"Sitting Down","Sadness"},{"Move Books","Joy"}<br>
+
+#### Accuracy curve on training set and validation set:
+![General preferences pane](./training/Emilya_Dataset/expr1205/expr003_4/accuracy_curve.png)
+#### Accuracy curve on test and missing sets.
+![General preferences pane](./training/Emilya_Dataset/expr1205/expr003_4/accuracy_test_and_missing.png)
+
+## Expr2: Activity classifier with emotion embedding
+#### Experiment setting:
+Embedding Dimension: 3
+The remaining hyperparameters are the same with Expr2
+
+Besides,in this experiment,Embedding layer is set as untrainable at the begining of training process. After several epochs, when the accuracy on training set is larger than 85%, the embedding layer is enabled to be trainable. 
+
+In this experiment, from the 16th epoch, the embedding layer is set to be trainable. We can see the accuracy on missing set has a dramatical decrease when the embedding layer is trained. 
+
+#### Accuracy Curve on training and validation sets:
+![General preferences pane](./training/Emilya_Dataset/expr1705/expr001/accuracy_curve.png)
+
+#### Accuracy curve on test and missing sets.:
+![General preferences pane](./training/Emilya_Dataset/expr1705/expr001/accuracy_test_and_missing.png)
 
 
 
