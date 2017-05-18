@@ -160,7 +160,7 @@ class RNN_Classifier(BaseEstimator):
             init_constant = Constant(value=self.constant_value)
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
                                    embeddings_initializer=init_constant,
-                                   embeddings_constraint=self.constraint,name='embedding_1',trainable=False)(label_input)
+                                   embeddings_constraint=self.constraint,name='embedding_1',trainable=True)(label_input)
         else:
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
                                    embeddings_constraint=self.constraint,trainable=True)(label_input)
@@ -305,7 +305,7 @@ class RNN_Classifier(BaseEstimator):
                 else:
                     if self.loss_history['accuracy_train'][-1]>self.threshold_embd:
                         self.rnn.get_layer('embedding_1').trainable=True
-                        print "embedding trainable"
+                        print "embedding trainable: {}".format(self.rnn.get_layer('embedding_1').trainable)
                     else:
                         self.rnn.get_layer('embedding_1').trainable = False
 
