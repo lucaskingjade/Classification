@@ -311,6 +311,7 @@ class RNN_Classifier(BaseEstimator):
                     else:
                         self.rnn.get_layer('embedding_1').trainable = False
                         self.compile()
+                        print "embedding trainable: {}".format(self.rnn.get_layer('embedding_1').trainable)
 
             self.training_loop(self.train_X,self.train_Y1,self.train_Y2,batch_size=self.batch_size)
             #each epoch save the learned embedding
