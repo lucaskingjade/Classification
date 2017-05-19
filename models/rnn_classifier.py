@@ -1,5 +1,5 @@
 from keras.models import Model
-from keras.layers import LSTM,Dense,merge,Input,Embedding,RepeatVector,Reshape
+from keras.layers import LSTM,Dense,merge,Input,Embedding,RepeatVector,Reshape,BatchNormalization
 import numpy as np
 from keras.optimizers import SGD,RMSprop,Adam
 from sklearn.base import BaseEstimator
@@ -171,8 +171,11 @@ class RNN_Classifier(BaseEstimator):
         for i, (dim, activation) in enumerate(zip(self.hidden_dim_list, self.activation_list)):
             if i == len(self.hidden_dim_list) - 1:
                 encoded = LSTM(output_dim=dim, activation=activation, return_sequences=False)(encoded)
+                encoded = BatchNormalization(axis=-1)(encoded)
             else:
                 encoded = LSTM(output_dim=dim, activation=activation, return_sequences=True)(encoded)
+                encoded = BatchNormalization(axis=-1)(encoded)
+
 
         encoded = Dense(output_dim=8, activation='softmax')(encoded)
         return Model(input=[input, label_input], output=encoded, name='RNN')
@@ -343,6 +346,7 @@ class RNN_Classifier(BaseEstimator):
         # batch generator
         self.data_generator = self.batch_generator(X, Y1, Y2, batch_size=batch_size,shuffle=True)
         for X_batch,Y_batch, add_label in self.data_generator:
+
             self.rnn.train_on_batch(x=[X_batch,add_label],y=Y_batch)
 
 
