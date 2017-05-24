@@ -5,3 +5,9 @@
 *.txt
 *.h5
 *.sh
+*.stdout
+*.png
+*.stderr
+*.npz
+*.h5
+*expr*

@@ -15,6 +15,7 @@ class RNN_Classifier(BaseEstimator):
     def __init__(self,embd_dim=2,
                  hidden_dim_list=[100,100],
                  activation_list=['tanh','tanh'],
+                 batch_norm_list=[False,False],
                  batch_size=300,max_epoch=200,
                  optimiser='rmsprop',
                  lr=0.001,decay=0.0,
@@ -168,13 +169,15 @@ class RNN_Classifier(BaseEstimator):
         embd_label = Reshape(target_shape=(self.embd_dim,))(embd_label)
         embd_label = RepeatVector(self.max_len)(embd_label)
         encoded = merge([input, embd_label], mode='concat', concat_axis=2)
-        for i, (dim, activation) in enumerate(zip(self.hidden_dim_list, self.activation_list)):
+        for i, (dim, activation,is_batch_norm) in enumerate(zip(self.hidden_dim_list, self.activation_list,self.batch_norm_list)):
             if i == len(self.hidden_dim_list) - 1:
                 encoded = LSTM(output_dim=dim, activation=activation, return_sequences=False)(encoded)
-                encoded = BatchNormalization(axis=-1)(encoded)
+                if is_batch_norm==True:
+                    encoded = BatchNormalization(axis=-1)(encoded)
             else:
                 encoded = LSTM(output_dim=dim, activation=activation, return_sequences=True)(encoded)
-                encoded = BatchNormalization(axis=-1)(encoded)
+                if is_batch_norm==True:
+                    encoded = BatchNormalization(axis=-1)(encoded)
 
 
         encoded = Dense(output_dim=8, activation='softmax')(encoded)
