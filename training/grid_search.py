@@ -25,6 +25,7 @@ data_obj = Emilya_Dataset()
 embd_dim=[2]
 hidden_dim_list=[[100,20]]
 activation_list=[['tanh','tanh']]
+batch_norm_list=[[False,False]]
 batch_size=[300]
 max_epoch=[20]
 remove_pairs=True
