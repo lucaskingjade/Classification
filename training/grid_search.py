@@ -46,4 +46,4 @@ print "data_obj: train_X:{0}, train_Y2:{1},train_Y1:{2}".format(data_obj.train_X
 grid_result = grid_search.fit(X=X)
 print("Best: %f using %s" % (grid_result.best_score_, grid_result.best_params_))
 for params, mean_score, scores in grid_result.grid_scores_:
-    print("scores.mean:%f (score.std:%f) with: %r" % (scores.mean(), scores.std(), params))
+    print("scores.mean:%f (score.std:%f) with: %r" % (-1.*scores.mean(), -1.*scores.std(), params))
