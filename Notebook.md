@@ -53,7 +53,7 @@ Before each epoch of training process, we randomly assign emotion labels to $X_2
 #### Experiment setting: 
 hidden\_dim\_list=[100, 20], activation_list=['tanh', 'tanh'], <br>
 max_epoch=50, optimiser='adam', lr=0.005, decay=1e-4,<br>
-missing pairs:{"Simple Walk","Panic Fear"},{"Sitting Down","Sadness"},{"Move Books","Joy"}<br>
+# missing pairs:{"Simple Walk","Panic Fear"},{"Sitting Down","Sadness"},{"Move Books","Joy"}<br>
 
 #### Accuracy curve on training set and validation set:
 ![General preferences pane](./training/Emilya_Dataset/expr1205/expr003_4/accuracy_curve.png)
@@ -74,6 +74,106 @@ In this experiment, from the 16th epoch, the embedding layer is set to be traina
 
 #### Accuracy curve on test and missing sets.:
 ![General preferences pane](./training/Emilya_Dataset/expr1705/expr001/accuracy_test_and_missing.png)
+
+*******************************************************************
+
+# 3.01 Juin,2017
+## Expr(Deleted): activation "relu" doesn't work and will cause sigularity "NAN"
+### Experiment setting:
+
+    embd_dim=3, hidden_dim_list=[100, 20,20], 
+    activation_list=['relu', 'relu','relu'],
+    batch_norm_list=[True,False,False],
+    batch_size=300,
+    max_epoch=100, optimiser='adam', lr=0.001, decay=0,
+    momentum=0.0,nesterov = False,remove_pairs=True,
+    rm_activities=['Simple Walk','Sitting Down', 'Move Books'],
+    rm_emotions=['Panic Fear','Sadness', 'Joy'],
+    constant_initializer=None,constant_value=1.,threshold_embd=None)
+
+## Expr005 (Running): use 'tanh' with batchnormalization
+### Path of Experiment: /data1/home/wang.qi/CODE/python/Classification/training/Emilya_Dataset/expr1705/expr005
+
+Setting:
+
+    embd_dim=2, hidden_dim_list=[50, 20,20], 
+    activation_list=['tanh', 'tanh','tanh'],
+    batch_norm_list=[True,True,False],
+    batch_size=300,
+    max_epoch=100, optimiser='adam', lr=0.001, decay=0,
+    momentum=0.0,nesterov = False,remove_pairs=True,
+    rm_activities=['Simple Walk','Sitting Down', 'Move Books'],
+    rm_emotions=['Panic Fear','Sadness', 'Joy'],
+    constant_initializer=None,constant_value=1.,threshold_embd=None)
+ 
+## Expr006 (Running): use 'tanh' with batchnormalization for all layers
+### Path of Experiment:/data1/home/wang.qi/CODE/python/Classification/training/Emilya_Dataset/expr1705/expr006
+ 
+Setting:
+
+    embd_dim=2, hidden_dim_list=[50, 20,20],
+    activation_list=['tanh', 'tanh','tanh']
+    batch_norm_list=[True,True,True],
+    batch_size=300,
+    max_epoch=100, optimiser='adam', lr=0.001, decay=0,
+    momentum=0.0,nesterov = False,remove_pairs=True,
+    rm_activities=['Simple Walk','Sitting Down', 'Move Books'],
+    rm_emotions=['Panic Fear','Sadness','Joy'],
+    constant_initializer=None,constant_value=1.,threshold_embd=None)
+
+
+## Expr007(Running): use 'softsign'
+
+ ### Path of Experiment:/data1/home/wang.qi/CODE/python/Classification/training/Emilya_Dataset/expr1705/expr007
+ 
+Setting:
+
+    embd_dim=2, hidden_dim_list=[50, 20,20],
+    activation_list=['softsign', 'softsigm','softsign']
+    batch_norm_list=[False,False,False],
+    batch_size=300,
+    max_epoch=100, optimiser='adam', lr=0.001, decay=0,
+    momentum=0.0,nesterov = False,remove_pairs=True,
+    rm_activities=['Simple Walk','Sitting Down', 'Move Books'],
+    rm_emotions=['Panic Fear','Sadness','Joy'],
+    constant_initializer=None,constant_value=1.,threshold_embd=None)
+
+## Expr008(Running): use 'softsign'
+
+ ### Path of Experiment:/data1/home/wang.qi/CODE/python/Classification/training/Emilya_Dataset/expr1705/expr008
+ 
+Setting:
+
+    embd_dim=2, hidden_dim_list=[50, 20,20],
+    activation_list=['softsign', 'softsigm','softsign']
+    batch_norm_list=[True,False,False],
+    batch_size=300,
+    max_epoch=100, optimiser='adam', lr=0.001, decay=0,
+    momentum=0.0,nesterov = False,remove_pairs=True,
+    rm_activities=['Simple Walk','Sitting Down', 'Move Books'],
+    rm_emotions=['Panic Fear','Sadness','Joy'],
+    constant_initializer=None,constant_value=1.,threshold_embd=None)
+
+## Expr009(Running): use 'softsign'
+
+ ### Path of Experiment:/data1/home/wang.qi/CODE/python/Classification/training/Emilya_Dataset/expr1705/expr009
+ 
+Setting:
+
+    embd_dim=2, hidden_dim_list=[50, 20,20],
+    activation_list=['softsign', 'softsigm','softsign']
+    batch_norm_list=[True,True,True],
+    batch_size=300,
+    max_epoch=100, optimiser='adam', lr=0.001, decay=0,
+    momentum=0.0,nesterov = False,remove_pairs=True,
+    rm_activities=['Simple Walk','Sitting Down', 'Move Books'],
+    rm_emotions=['Panic Fear','Sadness','Joy'],
+    constant_initializer=None,constant_value=1.,threshold_embd=None)
+
+
+
+
+
 
 
 
