@@ -31,10 +31,11 @@ max_epoch=[20]
 remove_pairs=True
 rm_activities = [["Simple Walk"]]
 rm_emotions = [["Panic Fear"]]
-optimiser = ['rmsprop']
+optimiser = [['rmsprop']]
 lr = [0.01,0.005]
 params = dict(embd_dim=embd_dim,batch_size=batch_size,max_epoch=max_epoch,
             hidden_dim_list=hidden_dim_list,activation_list=activation_list,
+            batch_norm_list=batch_norm_list,
             remove_pairs=remove_pairs,rm_activities=rm_activities,rm_emotions=rm_emotions,
               optimiser=optimiser,lr=lr)
 
