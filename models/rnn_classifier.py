@@ -376,7 +376,7 @@ class RNN_Classifier(BaseEstimator):
         # print "loss is {}".format(loss)
         # return accuracy
         #find the most stable learning curve
-        delta_abs = np.abs(self.loss_history['loss_train'][0:-1]-self.loss_history['loss_train'][1:])
+        delta_abs = np.abs(np.asarray(self.loss_history['loss_train'][0:-1])-np.asarray(self.loss_history['loss_train'][1:]))
         mean_delta = np.mean(delta_abs)
         std_delta = np.std(delta_abs)
         print ("mean of delta_abs is",mean_delta)
