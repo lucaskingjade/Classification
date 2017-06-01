@@ -28,10 +28,10 @@ activation_list=[['tanh','tanh']]
 batch_norm_list=[[False,False]]
 batch_size=[300]
 max_epoch=[20]
-remove_pairs=True
+remove_pairs=[True]
 rm_activities = [["Simple Walk"]]
 rm_emotions = [["Panic Fear"]]
-optimiser = [['rmsprop']]
+optimiser = ['rmsprop']
 lr = [0.01,0.005]
 params = dict(embd_dim=embd_dim,batch_size=batch_size,max_epoch=max_epoch,
             hidden_dim_list=hidden_dim_list,activation_list=activation_list,
