@@ -164,7 +164,7 @@ class RNN_Classifier(BaseEstimator):
                                    embeddings_constraint=self.constraint,name='embedding_1',trainable=True)(label_input)
         else:
             embd_label = Embedding(input_dim=8, output_dim=self.embd_dim,
-                                   embeddings_constraint=self.constraint,trainable=True)(label_input)
+                                   embeddings_constraint=self.constraint,name = 'embedding_1',trainable=True)(label_input)
 
         embd_label = Reshape(target_shape=(self.embd_dim,))(embd_label)
         embd_label = RepeatVector(self.max_len)(embd_label)
